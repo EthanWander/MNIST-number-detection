@@ -22,6 +22,7 @@ def get_img_ascii(img):
 
 def main():
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data(path="mnist.npz")
+    y_train_categorical = keras.utils.to_categorical(y_train)
 
     x_train_norm = keras.utils.normalize(x_train, axis=1)
     x_test_norm = keras.utils.normalize(x_test, axis=1)
@@ -37,11 +38,13 @@ def main():
 
     model.compile(
         optimizer="adam",
-        loss="sparse_categorical_crossentropy",
+        loss="categorical_crossentropy",
         metrics=["accuracy"]
     )
 
-    model.fit(x_train_norm, y_train, batch_size=50, epochs=12, validation_split=0.2, verbose=1)
+    model.fit(x_train_norm, y_train_categorical, batch_size=50, epochs=12, validation_split=0.2, verbose=1)
+
+    model.save('model')
 
     predictions = model.predict([x_test_norm])
 
